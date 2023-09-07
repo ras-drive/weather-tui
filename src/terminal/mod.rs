@@ -1,7 +1,15 @@
-use std::{io::{Stdout, self}, error::Error, time::Duration};
+use std::{
+    error::Error,
+    io::{self, Stdout},
+    time::Duration,
+};
 
-use crossterm::{terminal::{enable_raw_mode, disable_raw_mode, LeaveAlternateScreen, EnterAlternateScreen}, execute, event::{self, Event, KeyCode}};
-use ratatui::{Terminal, prelude::CrosstermBackend, widgets::Paragraph};
+use crossterm::{
+    event::{self, Event, KeyCode},
+    execute,
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+};
+use ratatui::{prelude::CrosstermBackend, widgets::Paragraph, Terminal};
 
 pub fn setup_terminal() -> Result<Terminal<CrosstermBackend<Stdout>>, Box<dyn Error>> {
     let mut stdout = io::stdout();

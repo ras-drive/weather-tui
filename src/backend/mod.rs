@@ -1,21 +1,7 @@
-
 use reqwest::Url;
-use serde_derive::{Deserialize, Serialize};
-use std::env;
+use serde::{Deserialize, Serialize};
 
-use dotenv::dotenv;
-
-fn get_api_key() -> Result<String, dotenv::Error> {
-    dotenv().ok();
-
-    for (key, value) in env::vars() {
-        if key == "WEATHER_API_KEY" {
-            return Ok(value);
-        }
-    }
-
-    Err(dotenv::Error::EnvVar(env::VarError::NotPresent))
-}
+pub mod config;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Weather {
@@ -70,38 +56,43 @@ pub struct Location {
 }
 
 impl Weather {
-    pub async fn get(location: (&str, &str)) -> Result<Self, reqwest::Error> {
-        let params = [
-        ("q", format!("{} {}", location.0, location.1)),
-        ];
-        let url = Url::parse_with_params("https://weatherapi-com.p.rapidapi.com/current.json", params).unwrap();
+    pub async fn get(api_key: &str, location: (&str, &str)) -> Result<Self, reqwest::Error> {
+        let params = [("q", format!("{} {}", location.0, location.1))];
+        let url =
+            Url::parse_with_params("https://weatherapi-com.p.rapidapi.com/current.json", params)
+                .unwrap();
         let client = reqwest::Client::new();
         client
-        .get(url)
-        .header("X-RapidAPI-Key", get_api_key().unwrap())
-        .header("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com")
-        .send()
-        .await?.json::<Weather>().await
-
+            .get(url)
+            .header("X-RapidAPI-Key", api_key)
+            .header("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com")
+            .send()
+            .await?
+            .json::<Weather>()
+            .await
     }
 
     pub fn get_location(&self) -> (&str, &str, &str) {
-        (&self.location.country, &self.location.region, &self.location.name)
+        (
+            &self.location.country,
+            &self.location.region,
+            &self.location.name,
+        )
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_get_api_key() {
-        assert!(get_api_key().is_ok())
-    }
+    use crate::Config;
 
     #[tokio::test]
     async fn test_get_weather_object() {
-        let weather = Weather::get(("Chicago", "US")).await;
+        let weather = Weather::get(
+            Config::get().unwrap().get_api_key().unwrap(),
+            ("Chicago", "US"),
+        )
+        .await;
         assert!(weather.is_ok());
     }
 }
