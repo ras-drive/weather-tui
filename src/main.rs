@@ -1,10 +1,12 @@
+mod app;
 mod backend;
 mod terminal;
 
-use terminal::App;
+use app::run;
+use app::App;
 
 use crate::backend::config::Config;
-use crate::terminal::{restore_terminal, run, setup_terminal};
+use crate::terminal::{restore_terminal, setup_terminal};
 use std::error::Error;
 
 #[tokio::main]

@@ -35,8 +35,13 @@ impl WeatherCondition {
             _ => None,
         }
     }
+}
 
-    pub fn display(&self) -> &'static str {
+///
+/// used to return a &str containing ascii art of the weather condition
+///
+impl AsRef<str> for WeatherCondition {
+    fn as_ref(&self) -> &str {
         match self {
             WeatherCondition::Sunny => std::str::from_utf8(SUNNY).unwrap(),
             WeatherCondition::Cloudy => std::str::from_utf8(CLOUDS).unwrap(),

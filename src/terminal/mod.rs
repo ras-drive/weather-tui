@@ -1,24 +1,17 @@
 use std::{
     error::Error,
     io::{self, Stdout},
-    time::Duration,
 };
 
 use crossterm::{
-    event::{self, Event, KeyCode},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use ratatui::{prelude::*, widgets::Paragraph, Frame, Terminal};
 
-use crate::terminal::weather_condition::WeatherCondition;
+use crate::app::App;
 
-mod weather_condition;
-
-#[derive(Default)]
-pub struct App {
-    pub general_condition: Option<WeatherCondition>,
-}
+pub mod weather_condition;
 
 pub fn setup_terminal() -> Result<Terminal<CrosstermBackend<Stdout>>, Box<dyn Error>> {
     let mut stdout = io::stdout();
@@ -35,25 +28,7 @@ pub fn restore_terminal(
     Ok(terminal.show_cursor()?)
 }
 
-pub async fn run(
-    terminal: &mut Terminal<CrosstermBackend<Stdout>>,
-    app: App,
-) -> Result<(), Box<dyn Error>> {
-    loop {
-        terminal.draw(|f| ui(f, &app))?;
-
-        if event::poll(Duration::from_millis(250))? {
-            if let Event::Key(key) = event::read()? {
-                if KeyCode::Char('q') == key.code {
-                    break;
-                }
-            }
-        }
-    }
-    Ok(())
-}
-
-fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
+pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
     let size = f.size();
 
     let chunks = Layout::default()
@@ -61,8 +36,8 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
         .direction(Direction::Horizontal)
         .split(size);
 
-    let art = match &app.general_condition {
-        Some(wc) => wc.display(),
+    let art = match &app.weather_condition {
+        Some(wc) => wc.as_ref(),
         None => "",
     };
 
