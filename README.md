@@ -11,7 +11,7 @@ I'm building this for practice into building better software and have been tryin
 This is by no means the best way to do this as no way is the best way, but it's my attempt at trying to make it correct.
 I tried to think about this project in a bit of a more functional manner.
 
-I started building this while reading "The Pragmatic Programmer" and I think it helped influence me to pass values through
+I started building this while reading *"The Pragmatic Programmer"* and I think it helped influence me to pass values through
 functions more and use less of an imperative style.
 
 ### Config
