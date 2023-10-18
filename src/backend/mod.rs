@@ -5,30 +5,30 @@ pub mod config;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Weather {
-    location: Location,
-    current: Current,
+    pub location: Location,
+    pub current: Current,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Current {
     last_updated_epoch: i64,
     last_updated: String,
-    temp_c: f64,
-    temp_f: f64,
+    pub temp_c: f64,
+    pub temp_f: f64,
     is_day: i64,
-    condition: Condition,
-    wind_mph: f64,
-    wind_kph: f64,
+    pub condition: Condition,
+    pub wind_mph: f64,
+    pub wind_kph: f64,
     wind_degree: f64,
-    wind_dir: String,
+    pub wind_dir: String,
     pressure_mb: f64,
     pressure_in: f64,
     precip_mm: f64,
     precip_in: f64,
-    humidity: f64,
+    pub humidity: f64,
     cloud: f64,
-    feelslike_c: f64,
-    feelslike_f: f64,
+    pub feelslike_c: f64,
+    pub feelslike_f: f64,
     vis_km: f64,
     vis_miles: f64,
     uv: f64,
@@ -38,15 +38,15 @@ pub struct Current {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Condition {
-    text: String,
+    pub text: String,
     icon: String,
     code: i64,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Location {
-    name: String,
-    region: String,
+    pub name: String,
+    pub region: String,
     country: String,
     lat: f64,
     lon: f64,
@@ -72,12 +72,8 @@ impl Weather {
             .await
     }
 
-    pub fn get_location(&self) -> (&str, &str, &str) {
-        (
-            &self.location.country,
-            &self.location.region,
-            &self.location.name,
-        )
+    pub fn get_condition(&self) -> &str {
+        &self.current.condition.text
     }
 }
 
