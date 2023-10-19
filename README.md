@@ -14,7 +14,8 @@ I started building this while reading *"The Pragmatic Programmer"* and I think i
 
 The config file is a toml file located in the project directory for now, later I plan on using xdg directories to give it a config dir.
 
-|     Key     |         Description        |
-| ----------- | -------------------------- |
-|  api_key    |     WeatherAPI.com key     |
-|  location   | city, region("chicago il") |
+|       Key       |           Description           |
+| --------------- | ------------------------------- |
+|    api_key      |        WeatherAPI.com key       |
+|    location     |    city, region("chicago il")   |
+| update_interval | time in minutes between updates |

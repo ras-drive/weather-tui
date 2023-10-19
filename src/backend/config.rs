@@ -3,8 +3,12 @@ use std::{fs, io};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
+    /// Api key for WeatherApi.com
     api_key: String,
+    /// Location in "City Region/State" format
     location: String,
+    /// Time is stored as minutes between updates
+    update_interval: u64,
 }
 
 impl Config {
@@ -33,6 +37,20 @@ impl Config {
                 "config file location is in invalid format, please use a \"CITY STATE\" format",
             ))),
             Some(split) => Ok((split.0, split.1)),
+        }
+    }
+
+    pub fn get_update_interval(&self) -> Result<u64, Box<dyn std::error::Error>> {
+        match self.update_interval {
+            0 => {
+                Err(Box::new(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    "config file location is in invalid format, please use a \"CITY STATE\" format",
+                )))
+            }
+            _ => {
+                Ok(self.update_interval)
+            }
         }
     }
 }
