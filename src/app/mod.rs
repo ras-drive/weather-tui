@@ -12,6 +12,7 @@ pub struct App {
     pub config: Config,
     pub weather: Option<Weather>,
     pub should_update: bool,
+    pub exit: bool,
 }
 
 impl App {
@@ -20,6 +21,7 @@ impl App {
             config,
             weather: None,
             should_update: true,
+            exit: false,
         }
     }
 }
@@ -31,6 +33,10 @@ pub async fn run(
     let mut last_update = Instant::now();
 
     loop {
+        if app.exit {
+            break;
+        }
+
         match app.should_update {
             true => {
                 let weather =
@@ -47,15 +53,17 @@ pub async fn run(
             }
             false => {
                 loop {
-                    if last_update.elapsed() >= Duration::from_secs(app.config.get_update_interval()? * 60) {
+                    if last_update.elapsed() >= Duration::from_secs(app.config.get_update_interval()?) {
                         app.should_update = true;
-                        
+
                         last_update = Instant::now();
+                        break;
                     }
 
                     if event::poll(Duration::from_millis(250))? {
                         if let Event::Key(key) = event::read()? {
                             if KeyCode::Char('q') == key.code {
+                                app.exit = true;
                                 break;
                             }
                         }
@@ -70,13 +78,15 @@ pub async fn run(
                             false, // kph defaults to false for now, will be grabbed from the config file
                         )
                     })?;
+
+                    
                 }
 
                 
             }
         }
     }
-    
-    #[allow(unreachable_code)]
+
+    // #[allow(unreachable_code)]
     Ok(())
 }
