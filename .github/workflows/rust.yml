@@ -20,7 +20,7 @@ jobs:
     - name: config
       env:
         API_KEY: ${{ secrets.API_KEY }}
-      run: echo "api_key = '$API_KEY'" >> config.toml
+      run: echo "api_key = '$API_KEY'\nlocation = 'Chicago IL'" >> config.toml
     - name: Build
       run: cargo build --verbose
     - name: Run tests
