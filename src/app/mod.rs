@@ -87,6 +87,5 @@ pub async fn run(
         }
     }
 
-    // #[allow(unreachable_code)]
     Ok(())
 }
